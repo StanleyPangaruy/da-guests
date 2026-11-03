@@ -335,6 +335,14 @@
     fit($("when"), 48, 28, { maxW: guestW });
     fit($("venue"), 24, 16, { maxW: guestW });
     fit($("address"), 24, 16, { maxW: guestW });
+
+    // long name + long position: shrink both until date / venue / address fit above the footer
+    const guest = document.querySelector(".guest"), nameEl = $("name"), posEl = $("position");
+    let ns = parseFloat(nameEl.style.fontSize), ps = parseFloat(posEl.style.fontSize);
+    while (guest.scrollHeight > guest.clientHeight + 1 && (ns > 44 || ps > 30)) {
+      if (ns > 44) { ns -= 2; nameEl.style.fontSize = ns + "px"; }
+      if (ps > 30) { ps -= 1; posEl.style.fontSize = ps + "px"; }
+    }
   }
 
   let swapTimer, renderTicket = 0;
