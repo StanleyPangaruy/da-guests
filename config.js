@@ -11,9 +11,9 @@ window.BOARD_CONFIG = {
   sealRight: "assets/seal-right.png",
 
   footer: [
-    { icon: "web",       text: "livelopez.gov.ph" },
-    { icon: "video",     text: "Municipality of Lopez, Quezon" },
-    { icon: "social",    text: "municipalityoflopez,quezon" },
+    { img: "assets/icon-web.png",      text: "livelopez.gov.ph" },
+    { icon: "video",                   text: "Municipality of Lopez, Quezon" },
+    { img: "assets/icon-facebook.png", text: "municipalityoflopez,quezon" },
     { icon: "camera",    text: "municipalityoflopezquezon" }
   ],
 
