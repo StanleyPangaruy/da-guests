@@ -1,21 +1,21 @@
-active,honorific,name,position,district,date,time,venue,address,photo
-yes,KGG.,DANILO A. VILLANUEVA,Pangalawang Punong Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/dani.png
-yes,KGG.,IRA BEATRICE A. UBANA,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/ira.png
-yes,KGG.,ARISTOTLE R. YUMUL,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/ari.png
-yes,KGG.,ROSEMARIE A. OLANDA,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/rosemarie.png
-yes,KGG. ATTY.,ADRIAN DONALD L. SEGUI,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/dondon.png
-yes,KGG.,REMBERT A. MASAGANDA,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/rembert.png
-yes,KGG.,EFREN V. PARAISO,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/efren.png
-yes,KGG.,SHEREE ANN S. ALIVIO,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/ineng.png
-yes,KGG.,CASTOR R. ALANO,Miyembro ng Sangguniang Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/castor.png
-yes,KGG.,JOEL T. BILE,"Ex Officio, PPLB",DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/joel.png
-yes,KGG.,IRISH KAYE E. ARGOSINO,"Ex Officio, PPSK",DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/irish.png
-yes,KGG. DRA. ,HELEN D.L. TAN,Punong Lalawigan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/helen.png
-yes,KGG. ATTY.,MIKE D.L. TAN,Kinatawan ng Ika-4 na Distrito,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/mike.png
-yes,KGG.,"ISAIAS B. UBANA II, PhD",Punong Bayan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/sonny.png
-yes,KGG.,"ANACLETO ""THIRD"" A. ALCALA",Pangalawang Punong Lalawigan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/third.png
-yes,G.,CARL EDGAR B. CUSI,MLGOO-DILG,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/cusi.png
-yes,KGG.,RACHEL A. UBANA,"Bokal, Ika-4 na Distrito",DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/rachel.png
-yes,PLTCOL. ,JUN S. VILLAROSA,Hepe ng Pulis,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/sample-guest.png
-yes,PLT.,RONALD C. BANOGBANOG,Deputy Chief,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/sample-guest.png
-yes,G.,DANIEL ORIARTE,Kinatawan ni Gov. Dra. Helen Tan at Cong. Atty. Mike Tan,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon",photos/oriarte.webp
+﻿active,honorific,name,position,photo,district,date,time,venue,address
+yes,KGG.,DANILO A. VILLANUEVA,Pangalawang Punong Bayan,photos/dani.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,IRA BEATRICE A. UBANA,Miyembro ng Sangguniang Bayan,photos/ira.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,ARISTOTLE R. YUMUL,Hepe ng Distrito/Miyembro ng Sangguniang Bayan,photos/ari.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,ROSEMARIE A. OLANDA,Miyembro ng Sangguniang Bayan,photos/rosemarie.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG. ATTY.,ADRIAN DONALD L. SEGUI,Miyembro ng Sangguniang Bayan,photos/dondon.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,REMBERT A. MASAGANDA,Miyembro ng Sangguniang Bayan,photos/rembert.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,EFREN V. PARAISO,Miyembro ng Sangguniang Bayan,photos/efren.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,SHEREE ANN S. ALIVIO,Miyembro ng Sangguniang Bayan,photos/ineng.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,CASTOR R. ALANO,Miyembro ng Sangguniang Bayan,photos/castor.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,JOEL T. BILE,"Ex Officio, PPLB",photos/joel.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,IRISH KAYE E. ARGOSINO,"Ex Officio, PPSK",photos/irish.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG. DRA.,HELEN D.L. TAN,Punong Lalawigan,photos/helen.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG. ATTY.,MIKE D.L. TAN,Kinatawan ng Ika-4 na Distrito,photos/mike.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,"ISAIAS B. UBANA II, PhD",Punong Bayan,photos/sonny.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,"ANACLETO ""THIRD"" A. ALCALA",Pangalawang Punong Lalawigan,photos/third.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,G.,CARL EDGAR B. CUSI,MLGOO-DILG,photos/cusi.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,KGG.,RACHEL A. UBANA,"Bokal, Ika-4 na Distrito",photos/rachel.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,PLTCOL.,JUN S. VILLAROSA,Hepe ng Pulis,photos/sample-guest.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,PLT.,RONALD C. BANOGBANOG,Deputy Chief,photos/sample-guest.png,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
+yes,G.,DANIEL ORIARTE,Kinatawan ni Gov. Dra. Helen Tan at Cong. Atty. Mike Tan,photos/oriarte.webp,DISTRICT CHAMPACA,09/11/2026,3:00 pm,LNCHS DOLOR AMPHITHEATER,"Brgy. Magsaysay, Lopez, Quezon"
