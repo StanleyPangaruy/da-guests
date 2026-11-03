@@ -1,0 +1,23 @@
+{
+  "active": "c46e77e5",
+  "districts": [
+    {
+      "event_title": "District Assembly",
+      "district": "DISTRICT CHAMPACA",
+      "date": "2026-11-09",
+      "time": "3 PM",
+      "venue": "LNCHS DOLOR AMPHITHEATER",
+      "address": "Brgy. Magsaysay, Lopez, Quezon",
+      "id": "c46e77e5"
+    },
+    {
+      "event_title": "District Assembly",
+      "district": "DISTRICT SAMPAGUITA",
+      "date": "2026-11-09",
+      "time": "3 PM",
+      "venue": "LNCHS DOLOR AMPHITHEATER",
+      "address": "Brgy. Magsaysay, Lopez, Quezon",
+      "id": "fe1e72f5"
+    }
+  ]
+}

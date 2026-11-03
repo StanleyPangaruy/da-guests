@@ -62,10 +62,11 @@
 
   /* Photo */
   .photo-wrap {
-    position: absolute; left: 120px; bottom: 77px; width: 590px; height: 720px;
+    position: absolute; left: 40px; bottom: 77px; width: 720px; height: 720px;   /* wide enough that square / broad-shoulder photos get full height */
     display: flex; align-items: flex-end; justify-content: center; z-index: 2;
   }
-  .photo-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; object-position: bottom center; display: block; }
+  /* fill the photo box: small images are scaled up, wide ones fit by width; always sits on the footer */
+  .photo-wrap img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block; }
 
   /* Guest block */
   .guest {
@@ -143,12 +144,11 @@
 (() => {
   const C = Object.assign({
     province: "", municipality: "", eventTitle: "District Assembly",
-    csv: "guests.csv", rotateSeconds: 12, csvRefreshSeconds: 10, fit: "contain", background: "#fff", footer: []
+    csv: "guests.csv", csvRefreshSeconds: 10, fit: "contain", background: "#fff", footer: []
   }, window.BOARD_CONFIG || {});
 
-  // URL overrides: ?guest=2  ?interval=8  ?fit=cover  ?bg=transparent  ?csv=other.csv
+  // URL overrides: ?guest=2  ?fit=cover  ?bg=transparent  ?csv=other.csv
   const q = new URLSearchParams(location.search);
-  if (q.has("interval")) C.rotateSeconds = +q.get("interval");
   if (q.has("fit")) C.fit = q.get("fit");
   if (q.has("bg")) C.background = q.get("bg");
   if (q.has("csv")) C.csv = q.get("csv");
@@ -230,7 +230,17 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
+  let photoStamp = Date.now();   // changes whenever guests reload, so replaced photos show without a cache clear
   let guests = [], csvText = "", index = pinned ?? 0, lastShown = null;
+
+  // Event details (set from control.html → event.json). Filled-in values win over CSV columns.
+  const EVENT_FIELDS = ["event_title", "district", "date", "time", "venue", "address"];
+  let EV = Object.assign({}, C.event || {});
+  const withEvent = g => {
+    const m = Object.assign({}, g);
+    EVENT_FIELDS.forEach(k => { if (EV[k]) m[k] = EV[k]; });
+    return m;
+  };
 
   async function loadCSV() {
     try {
@@ -238,9 +248,10 @@
       if (!r.ok) throw new Error(r.status);
       const t = await r.text();
       if (t === csvText) return;
-      csvText = t;
+      csvText = t; photoStamp = Date.now(); trimCache.clear();
       guests = parseCSV(t).filter(g => !/^(no|n|0|false|hide)$/i.test(g.active || "yes"));
       hideMsg();
+      if (remote && typeof serverIndex === "number" && serverIndex < guests.length) index = serverIndex;
       if (index >= guests.length) index = 0;
       render(true);
     } catch (e) {
@@ -259,8 +270,51 @@
     while (s > minPx && (el.scrollWidth > maxW + 1 || el.scrollHeight > maxH + 1)) { s -= 2; el.style.fontSize = s + "px"; }
   }
 
+  /* ---------- photos: cut away empty transparent margins so every guest fills the photo area ---------- */
+  const trimCache = new Map();
+  function trimmedPhoto(url) {
+    if (trimCache.has(url)) return trimCache.get(url);
+    const p = new Promise(resolve => {
+      const im = new Image();
+      im.onload = () => {
+        try {
+          const W = im.naturalWidth, H = im.naturalHeight;
+          // find the visible area on a small copy (fast), then crop the full-size image
+          const k = Math.min(1, 400 / Math.max(W, H)), sw = Math.max(1, Math.round(W * k)), sh = Math.max(1, Math.round(H * k));
+          const c = document.createElement("canvas"); c.width = sw; c.height = sh;
+          const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(im, 0, 0, sw, sh);
+          const d = x.getImageData(0, 0, sw, sh).data;
+          let x0 = sw, y0 = sh, x1 = -1, y1 = -1;
+          for (let y = 0; y < sh; y++) for (let xx = 0; xx < sw; xx++) {
+            if (d[(y * sw + xx) * 4 + 3] > 24) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+          }
+          if (x1 < 0 || (x0 === 0 && y0 === 0 && x1 === sw - 1 && y1 === sh - 1)) return resolve(url);
+          const pad = 1 / k;
+          const cx = Math.max(0, Math.floor(x0 / k - pad)), cy = Math.max(0, Math.floor(y0 / k - pad));
+          const cw = Math.min(W, Math.ceil((x1 + 1) / k + pad)) - cx, ch = Math.min(H, Math.ceil((y1 + 1) / k + pad)) - cy;
+          const out = document.createElement("canvas"); out.width = cw; out.height = ch;
+          out.getContext("2d").drawImage(im, cx, cy, cw, ch, 0, 0, cw, ch);
+          resolve(out.toDataURL("image/png"));
+        } catch { resolve(url); }
+      };
+      im.onerror = () => resolve(url);
+      im.src = url;
+    });
+    trimCache.set(url, p);
+    return p;
+  }
+
   /* ---------- render ---------- */
-  function paint(g) {
+  const photoURL = g => g.photo ? g.photo + (g.photo.includes("?") ? "&" : "?") + "v=" + photoStamp : "";
+  // load + trim the photo, then make sure the browser has decoded it, so it appears in the same frame as the text
+  async function preparePhoto(g) {
+    const url = photoURL(g);
+    if (!url) return "";
+    const src = await trimmedPhoto(url);
+    try { const t = new Image(); t.src = src; await t.decode(); } catch {}
+    return src;
+  }
+  function paint(g, photoSrc) {
     $("eventTitle").textContent = g.event_title || C.eventTitle;
     $("district").textContent = g.district || "";
     const nm = [g.honorific, g.name].filter(Boolean).join(" ");
@@ -271,7 +325,8 @@
     $("venue").textContent = g.venue || "";
     $("address").textContent = g.address || "";
     const img = $("photo");
-    if (g.photo) { img.src = g.photo; img.style.display = ""; } else { img.removeAttribute("src"); img.style.display = "none"; }
+    if (photoSrc) { img.src = photoSrc; img.style.display = ""; }
+    else { img.removeAttribute("src"); img.style.display = "none"; }
 
     const guestW = document.querySelector(".guest").clientWidth;
     fit($("district"), 86, 40, { maxW: $("district").clientWidth });
@@ -282,18 +337,26 @@
     fit($("address"), 24, 16, { maxW: guestW });
   }
 
-  let swapTimer;
+  let swapTimer, renderTicket = 0;
   function render(force) {
     if (!guests.length) return;
-    const g = guests[index];
+    const g = withEvent(guests[index] || {});
     const key = JSON.stringify(g);
     if (!force && key === lastShown) return;
-    if (lastShown === null) { paint(g); lastShown = key; return; }
-    if (key === lastShown) return;
+    if (key === lastShown && lastShown !== null) return;
+    const first = lastShown === null;
     lastShown = key;
+    const ticket = ++renderTicket;
     clearTimeout(swapTimer);
+    if (first) { preparePhoto(g).then(src => { if (ticket === renderTicket) paint(g, src); }); return; }
     board.classList.add("leaving");
-    swapTimer = setTimeout(() => { paint(g); board.classList.remove("leaving"); }, 560);
+    const ready = preparePhoto(g);                               // start loading the new photo during the fade-out
+    const faded = new Promise(res => { swapTimer = setTimeout(res, 560); });
+    Promise.all([ready, faded]).then(([src]) => {
+      if (ticket !== renderTicket) return;                       // a newer guest was picked meanwhile
+      paint(g, src);
+      requestAnimationFrame(() => board.classList.remove("leaving"));
+    });
   }
 
   function go(n) {
@@ -302,37 +365,32 @@
     render();
   }
 
-  /* ---------- auto rotate ---------- */
-  let paused = pinned !== null, rotT;
-  function scheduleRotate() {
-    clearInterval(rotT);
-    if (C.rotateSeconds > 0 && !isPreview) rotT = setInterval(() => { if (!paused && !remote) go(index + 1); }, C.rotateSeconds * 1000);
-  }
-  scheduleRotate();
-
   /* ---------- keyboard (when the page has focus, e.g. fullscreen Chrome) ---------- */
   addEventListener("keydown", e => {
     if (e.key === "ArrowRight") go(index + 1);
     else if (e.key === "ArrowLeft") go(index - 1);
-    else if (e.key === " ") paused = !paused;
     else if (e.key.toLowerCase() === "b") document.body.classList.toggle("is-blank");
     else if (e.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
     else if (/^[1-9]$/.test(e.key)) go(+e.key - 1);
   });
 
   /* ---------- remote control via serve.py (/api/state) ---------- */
-  let remote = false, remoteVer = -1;
+  let remote = false, remoteVer = -1, guestsVer = null, serverIndex = null;
   async function pollRemote() {
-    if (location.protocol === "file:" || pinned !== null) return;
+    if (location.protocol === "file:") return;
     try {
       const r = await fetch("/api/state", { cache: "no-store" });
       if (!r.ok) throw 0;
       const s = await r.json();
-      remote = s.mode === "manual";
+      serverIndex = s.index;
+      if (guestsVer !== null && s.guestsVersion !== guestsVer) loadCSV();   // guests edited on control page
+      guestsVer = s.guestsVersion;
+      if (s.event && JSON.stringify(s.event) !== JSON.stringify(EV)) { EV = s.event; render(); }
+      if (pinned !== null) return;
+      remote = true;
       document.body.classList.toggle("is-blank", !!s.blank);
-      if (s.interval && s.interval !== C.rotateSeconds) { C.rotateSeconds = s.interval; scheduleRotate(); }
       if (isPreview) {
-        const want = remote ? s.index : s.onAir;
+        const want = s.index;
         if (typeof want === "number" && want !== index) go(want);
         return;
       }

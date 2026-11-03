@@ -18,7 +18,6 @@ window.BOARD_CONFIG = {
   ],
 
   csv: "guests.csv",
-  rotateSeconds: 12,      // auto-advance time per guest (0 = stay on one guest)
   csvRefreshSeconds: 10,  // re-read guests.csv so edits show up live
   fit: "contain",         // contain | cover | stretch  (how the 1920×972 design fills the LED canvas)
   background: "#ffffff"   // colour around the design when fit = contain

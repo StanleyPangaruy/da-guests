@@ -15,7 +15,7 @@ from rembg import new_session, remove
 
 out_dir = Path(__file__).parent / "photos"
 out_dir.mkdir(exist_ok=True)
-session = new_session("u2net_human_seg")
+session = new_session("isnet-general-use")
 
 for src in sys.argv[1:]:
     img = Image.open(src).convert("RGB")
