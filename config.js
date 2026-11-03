@@ -7,8 +7,8 @@ window.BOARD_CONFIG = {
   municipality: "MUNICIPALITY OF LOPEZ",
   eventTitle: "District Assembly",        // can be overridden per row (event_title column)
 
-  sealLeft:  "assets/seal-left.png",       // swap in hi-res PNGs with transparent background
-  sealRight: "assets/seal-right.png",
+  sealLeft:  "logo/quezon.webp",           // hi-res seals with transparent background
+  sealRight: "logo/lopez.png",
 
   footer: [
     { img: "assets/icon-web.png",      text: "livelopez.gov.ph" },

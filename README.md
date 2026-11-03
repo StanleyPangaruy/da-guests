@@ -28,5 +28,5 @@ You can still edit `guests.csv` in Excel (columns `active, honorific, name, posi
 
 ## Other files
 - `config.js` – header text, seals, footer links, fit mode.
-- `assets/seal-left.png`, `assets/seal-right.png` – cropped from the poster; replace with the original hi-res seals for a sharper LED image.
+- `logo/quezon.webp`, `logo/lopez.png` – hi-res seals shown on the wall (set in `config.js`).
 - `cutout.py` – removes photo backgrounds: `pip install "rembg[cpu]"` then `python cutout.py raw/*.jpg`.
