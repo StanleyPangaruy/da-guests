@@ -80,9 +80,20 @@
   }
   .position { color: var(--navy); font-weight: 600; font-size: 54px; line-height: 1.05; margin-top: 2px; }
   .when { color: var(--ink); font-weight: 800; font-size: 48px; margin-top: 28px; line-height: 1; white-space: nowrap; }
-  .when .sep { display: inline-block; width: 4px; height: 0.72em; background: var(--ink); margin: 0 18px; vertical-align: -0.02em; }
+  .when .sep { display: inline-block; width: 0.085em; height: 0.72em; background: var(--ink); margin: 0 0.36em; vertical-align: -0.02em; }
   .venue { color: var(--ink); font-weight: 700; font-size: 24px; margin-top: 12px; line-height: 1.2; white-space: nowrap; }
   .address { color: var(--ink); font-weight: 700; font-size: 24px; line-height: 1.2; white-space: nowrap; }
+
+  /* Main background: no guest; title, district and event details centred */
+  #board.main .event-title { left: 0; }
+  #board.main .band-district, #board.main .district { height: 165px; }
+  #board.main .district { left: 40px; right: 40px; }
+  #board.main .photo-wrap, #board.main .name:empty, #board.main .position:empty { display: none; }
+  #board.main .guest { left: 60px; right: 60px; top: 506px; height: 380px; justify-content: center; }
+  #board.main .name { max-height: none; white-space: nowrap; }
+  #board.main .name:empty + .position:empty + .when { margin-top: 0; }
+  #board.main .when { margin-top: 30px; }
+  #board.main .venue { margin-top: 18px; }
 
   /* Footer */
   .footer {
@@ -234,7 +245,7 @@
   let guests = [], csvText = "", index = pinned ?? 0, lastShown = null;
 
   // Event details (set from control.html → event.json). Filled-in values win over CSV columns.
-  const EVENT_FIELDS = ["event_title", "district", "date", "time", "venue", "address"];
+  const EVENT_FIELDS = ["event_title", "district", "date", "time", "venue", "address", "speaker", "speaker_title"];
   let EV = Object.assign({}, C.event || {});
   const withEvent = g => {
     const m = Object.assign({}, g);
@@ -315,11 +326,13 @@
     return src;
   }
   function paint(g, photoSrc) {
+    const isMain = !!g._main;
+    board.classList.toggle("main", isMain);
     $("eventTitle").textContent = g.event_title || C.eventTitle;
     $("district").textContent = g.district || "";
-    const nm = [g.honorific, g.name].filter(Boolean).join(" ");
+    const nm = isMain ? (g.speaker || "") : [g.honorific, g.name].filter(Boolean).join(" ");
     $("name").textContent = nm;
-    $("position").textContent = g.position || "";
+    $("position").textContent = isMain ? (g.speaker_title || "") : (g.position || "");
     const date = formatDate(g.date);
     $("when").innerHTML = [date, esc(g.time || "")].filter(Boolean).join(" - ");
     $("venue").textContent = g.venue || "";
@@ -329,12 +342,14 @@
     else { img.removeAttribute("src"); img.style.display = "none"; }
 
     const guestW = document.querySelector(".guest").clientWidth;
-    fit($("district"), 86, 40, { maxW: $("district").clientWidth });
-    fit($("name"), 86, 44, { maxW: guestW, maxH: 205 });
-    fit($("position"), 54, 30, { maxW: guestW });
-    fit($("when"), 48, 28, { maxW: guestW });
-    fit($("venue"), 24, 16, { maxW: guestW });
-    fit($("address"), 24, 16, { maxW: guestW });
+    fit($("district"), isMain ? 128 : 86, 40, { maxW: $("district").clientWidth });
+    const hasSpeaker = isMain && !!nm;
+    fit($("name"), isMain ? 96 : 86, 44, isMain ? { maxW: guestW } : { maxW: guestW, maxH: 205 });
+    fit($("position"), isMain ? 56 : 54, 30, { maxW: guestW });
+    fit($("when"), isMain ? (hasSpeaker ? 56 : 84) : 48, 28, { maxW: guestW });
+    fit($("venue"), isMain ? (hasSpeaker ? 34 : 48) : 24, 16, { maxW: guestW });
+    fit($("address"), isMain ? (hasSpeaker ? 30 : 40) : 24, 16, { maxW: guestW });
+    if (isMain) return;
 
     // long name + long position: shrink both until date / venue / address fit above the footer
     const guest = document.querySelector(".guest"), nameEl = $("name"), posEl = $("position");
@@ -347,8 +362,8 @@
 
   let swapTimer, renderTicket = 0;
   function render(force) {
-    if (!guests.length) return;
-    const g = withEvent(guests[index] || {});
+    if (!showMain && !guests.length) return;
+    const g = showMain ? withEvent({ _main: true }) : withEvent(guests[index] || {});
     const key = JSON.stringify(g);
     if (!force && key === lastShown) return;
     if (key === lastShown && lastShown !== null) return;
@@ -368,7 +383,8 @@
   }
 
   function go(n) {
-    if (!guests.length) return;
+    if (!guests.length || forceMain) return;
+    showMain = false;
     index = (n + guests.length) % guests.length;
     render();
   }
@@ -384,6 +400,8 @@
 
   /* ---------- remote control via serve.py (/api/state) ---------- */
   let remote = false, remoteVer = -1, guestsVer = null, serverIndex = null;
+  const forceMain = q.has("main");   // ?main = a browser source that always shows the main background
+  let showMain = forceMain;
   async function pollRemote() {
     if (location.protocol === "file:") return;
     try {
@@ -397,19 +415,25 @@
       if (pinned !== null) return;
       remote = true;
       document.body.classList.toggle("is-blank", !!s.blank);
+      if (forceMain) return;
       if (isPreview) {
+        if (!!s.main !== showMain) { showMain = !!s.main; if (!showMain && typeof s.index === "number") index = s.index; render(); return; }
         const want = s.index;
-        if (typeof want === "number" && want !== index) go(want);
+        if (!showMain && typeof want === "number" && want !== index) go(want);
         return;
       }
-      if (s.version !== remoteVer) { remoteVer = s.version; if (remote && typeof s.index === "number") go(s.index); }
+      if (s.version !== remoteVer) {
+        remoteVer = s.version;
+        if (s.main) { if (!showMain) { showMain = true; render(); } }
+        else if (typeof s.index === "number") { if (showMain) { showMain = false; index = s.index; render(); } else go(s.index); }
+      }
       // report what is on screen so the control page can show it
       if (s.onAir !== index) fetch("/api/onair", { method: "POST", body: String(index) }).catch(() => {});
     } catch { remote = false; }
   }
   setInterval(pollRemote, 600); pollRemote();
 
-  document.fonts.ready.then(() => { loadCSV(); });
+  document.fonts.ready.then(() => { loadCSV(); if (showMain) render(); });
   setInterval(loadCSV, Math.max(2, C.csvRefreshSeconds) * 1000);
 })();
 </script>

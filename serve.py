@@ -26,7 +26,7 @@ EVENT_FILE = os.path.join(ROOT, "event.json")
 OLD_DISTRICTS_FILE = os.path.join(ROOT, "districts.json")
 CSV_FILE = os.path.join(ROOT, "guests.csv")
 PHOTOS_DIR = os.path.join(ROOT, "photos")
-EVENT_FIELDS = ("event_title", "district", "date", "time", "venue", "address")
+EVENT_FIELDS = ("event_title", "district", "date", "time", "venue", "address", "speaker", "speaker_title")
 GUEST_COLUMNS = ["active", "honorific", "name", "position", "photo"]
 PHOTO_EXT = (".png", ".jpg", ".jpeg", ".webp", ".gif")
 
@@ -98,6 +98,7 @@ STATE = {
     "mode": "manual",   # the operator picks the guest on control.html
     "index": 0,         # guest on the wall (0-based)
     "blank": False,     # black out the wall
+    "main": False,      # show the main background instead of a guest
     "onAir": None,      # what the board reports it is currently showing
     "version": 0,
     "guestsVersion": 0,      # bumped when the control page saves guests.csv
@@ -143,7 +144,7 @@ class Handler(SimpleHTTPRequestHandler):
             except json.JSONDecodeError:
                 return self._json({"error": "bad json"}, 400)
             with _lock:
-                for k in ("index", "blank"):
+                for k in ("index", "blank", "main"):
                     if k in patch:
                         STATE[k] = patch[k]
                 STATE["version"] += 1

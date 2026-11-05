@@ -44,6 +44,7 @@
   .row.air { border-color: var(--live); }
   .row .head { display: grid; grid-template-columns: 34px 1fr auto auto; gap: 10px; align-items: center; padding: 12px 10px 12px 14px; cursor: pointer; }
   .row .n { color: var(--muted); font-weight: 700; }
+  .main-row { margin-bottom: 8px; }
   .row small { display: block; color: var(--muted); font-weight: 500; }
   .row .tag { font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 3px 8px; border-radius: 99px; background: var(--live); visibility: hidden; }
   .row.air .tag { visibility: visible; }
@@ -71,11 +72,16 @@
           <label class="wide">Venue<input name="venue"></label>
           <label class="wide">Address<input name="address"></label>
           <label class="wide">Title above the district<input name="event_title"></label>
+          <label>Main background name<input name="speaker"></label>
+          <label>Main background title<input name="speaker_title"></label>
         </div>
         <div class="actions"><button type="submit" class="primary">Update wall</button></div>
       </form>
     </details>
 
+    <div class="row main-row" id="mainRow">
+      <div class="head"><span class="n">★</span><span>Main background</span><span class="tag">ON AIR</span><span></span></div>
+    </div>
     <div class="list" id="list"></div>
     <button class="add" id="addGuest">+ Add guest</button>
   </section>
@@ -242,7 +248,8 @@ form.addEventListener("submit", async e => {
 
 /* ---------- on air ---------- */
 function drawAir() {
-  document.querySelectorAll(".row").forEach(el => el.classList.toggle("air", +el.dataset.i === state.index));
+  document.querySelectorAll("#list .row").forEach(el => el.classList.toggle("air", !state.main && +el.dataset.i === state.index));
+  $("mainRow").classList.toggle("air", !!state.main);
 }
 function drawState() {
   drawEvent();
@@ -255,9 +262,10 @@ async function send(patch) {
 async function poll() { try { state = await (await fetch("/api/state", { cache: "no-store" })).json(); drawState(); } catch {} }
 
 const count = () => visible().length;
-const pick = i => count() && send({ mode: "manual", index: ((i % count()) + count()) % count() });
-$("prev").onclick = () => pick((state.index ?? 0) - 1);
-$("next").onclick = () => pick((state.index ?? 0) + 1);
+const pick = i => count() && send({ mode: "manual", main: false, index: ((i % count()) + count()) % count() });
+$("mainRow").onclick = () => send({ main: true });
+$("prev").onclick = () => pick(state.main ? count() - 1 : (state.index ?? 0) - 1);
+$("next").onclick = () => pick(state.main ? 0 : (state.index ?? 0) + 1);
 $("blank").onclick = () => send({ blank: !state.blank });
 addEventListener("keydown", e => {
   if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;

@@ -21,6 +21,10 @@ Photos: put transparent PNGs in the `photos` folder and pick them in the guest's
 
 You can still edit `guests.csv` in Excel (columns `active, honorific, name, position, photo`), but close Excel before saving from the control page.
 
+## Main background
+On the control page, click **Main background** (above the guest list) to show the event without a guest: title, district, the main background name and title (set in Event details), date, time and venue centred. Click any guest to go back.
+For a separate browser source that always shows it, use `http://localhost:8080/?main`.
+
 ## Controls
 - **Control page:** click a guest to put it on air, Prev/Next, Blackout.
 - **Keyboard (on the board itself):** ← → change guest, 1–9 jump, B blackout, F fullscreen.
