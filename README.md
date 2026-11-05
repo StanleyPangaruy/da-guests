@@ -31,6 +31,6 @@ For a separate browser source that always shows it, use `http://localhost:8080/?
 - **URL options:** `?guest=2` lock to one guest · `?fit=cover|contain|stretch` · `?bg=transparent` for keying.
 
 ## Other files
-- `config.js` – header text, seals, footer links, fit mode.
+- `config.js` – header text, seals, footer links, fit mode, `halfBody` (where guest photos are cut: lower = cut higher).
 - `logo/quezon.webp`, `logo/lopez.png` – hi-res seals shown on the wall (set in `config.js`).
 - `cutout.py` – removes photo backgrounds: `pip install "rembg[cpu]"` then `python cutout.py raw/*.jpg`.

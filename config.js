@@ -19,6 +19,7 @@ window.BOARD_CONFIG = {
 
   csv: "guests.csv",
   csvRefreshSeconds: 10,  // re-read guests.csv so edits show up live
-  fit: "contain",         // contain | cover | stretch  (how the 1920×972 design fills the LED canvas)
+  halfBody: 1.15,         // guest photos are cut at about the waist; lower = cut higher, higher = show more
+  fit: "contain",         // contain = stretch the layout to the screen shape (no bars) | cover | stretch
   background: "#ffffff"   // colour around the design when fit = contain
 };

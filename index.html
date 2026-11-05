@@ -21,48 +21,49 @@
   #stage { position: fixed; inset: 0; overflow: hidden; }
   #board {
     position: absolute; left: 0; top: 0;
-    width: 1920px; height: 972px;
+    width: 1920px; height: 972px;   /* grows to the screen's shape (see scale()) */
+    --ox: 0px; --oy: 0px;
     transform-origin: 0 0;
     background: #fff;
     overflow: hidden;
   }
 
-  #dots { position: absolute; inset: 0; }
+  #dots { position: absolute; inset: 0; width: 100%; height: 100%; }
 
   /* Header */
   .province {
-    position: absolute; top: 62px; left: 0; right: 0; text-align: center;
+    position: absolute; top: 34px; left: 0; right: 0; text-align: center;
     color: var(--navy); font-weight: 600; font-size: 43px; letter-spacing: 1.5px; line-height: 1;
   }
   .band-top {
-    position: absolute; top: 112px; left: 0; right: 0; height: 58px;
+    position: absolute; top: 84px; left: 0; right: 0; height: 58px;
     background: var(--red);
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-weight: 700; font-size: 41px; letter-spacing: 12px; padding-left: 12px;
   }
-  .seal { position: absolute; top: 47px; width: 192px; height: 192px; object-fit: contain; z-index: 3; }
-  .seal.left { left: 154px; }
-  .seal.right { right: 144px; top: 42px; width: 198px; height: 198px; }
+  .seal { position: absolute; top: 19px; width: 192px; height: 192px; object-fit: contain; z-index: 3; }
+  .seal.left { left: calc(154px + var(--ox) * .5); }
+  .seal.right { right: calc(144px + var(--ox) * .5); top: 14px; width: 198px; height: 198px; }
 
   /* Event title + district band */
   .event-title {
-    position: absolute; top: 250px; left: 700px; right: 0; text-align: center;
+    position: absolute; top: calc(226px + var(--oy)); left: calc(700px + var(--ox)); right: var(--ox); text-align: center;
     font-family: "Roboto Slab", Georgia, serif; font-weight: 800;
     color: var(--navy-deep); font-size: 72px; letter-spacing: -1.5px; line-height: 1;
   }
   .band-district {
-    position: absolute; top: 331px; left: 0; right: 0; height: 119px;
+    position: absolute; top: calc(307px + var(--oy)); left: 0; right: 0; height: 119px;
     background: linear-gradient(180deg, #a3141a 0%, #c8161e 40%, #ee1c24 100%);
   }
   .district {
-    position: absolute; top: 331px; height: 119px; left: 700px; right: 40px;
+    position: absolute; top: calc(307px + var(--oy)); height: 119px; left: calc(700px + var(--ox)); right: calc(40px + var(--ox));
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-weight: 800; font-size: 86px; letter-spacing: 1px; white-space: nowrap;
   }
 
   /* Photo */
   .photo-wrap {
-    position: absolute; left: 40px; bottom: 77px; width: 720px; height: 720px;   /* wide enough that square / broad-shoulder photos get full height */
+    position: absolute; left: calc(30px + var(--ox)); bottom: 77px; width: 760px; height: calc(745px + var(--oy) * 2);   /* wide enough that square / broad-shoulder photos get full height */
     display: flex; align-items: flex-end; justify-content: center; z-index: 2;
   }
   /* fill the photo box: small images are scaled up, wide ones fit by width; always sits on the footer */
@@ -70,7 +71,7 @@
 
   /* Guest block */
   .guest {
-    position: absolute; left: 740px; right: 70px; top: 480px; height: 400px;
+    position: absolute; left: calc(740px + var(--ox)); right: calc(70px + var(--ox)); top: calc(452px + var(--oy)); height: calc(428px + var(--oy));
     display: flex; flex-direction: column; align-items: center; text-align: center;
   }
   .name {
@@ -85,11 +86,11 @@
   .address { color: var(--ink); font-weight: 700; font-size: 24px; line-height: 1.2; white-space: nowrap; }
 
   /* Main background: no guest; title, district and event details centred */
-  #board.main .event-title { left: 0; }
+  #board.main .event-title { left: var(--ox); }
   #board.main .band-district, #board.main .district { height: 165px; }
-  #board.main .district { left: 40px; right: 40px; }
+  #board.main .district { left: calc(40px + var(--ox)); right: calc(40px + var(--ox)); }
   #board.main .photo-wrap, #board.main .name:empty, #board.main .position:empty { display: none; }
-  #board.main .guest { left: 60px; right: 60px; top: 506px; height: 380px; justify-content: center; }
+  #board.main .guest { left: calc(60px + var(--ox)); right: calc(60px + var(--ox)); top: calc(482px + var(--oy)); height: calc(404px + var(--oy)); justify-content: center; }
   #board.main .name { max-height: none; white-space: nowrap; }
   #board.main .name:empty + .position:empty + .when { margin-top: 0; }
   #board.main .when { margin-top: 30px; }
@@ -170,15 +171,25 @@
   const board = $("board"), stage = $("stage");
 
   /* ---------- scaling to the LED canvas ---------- */
+  let boardW = 1920, boardH = 972;
   function scale() {
-    const W = innerWidth, H = innerHeight, bw = 1920, bh = 972;
+    const W = innerWidth, H = innerHeight;
     stage.style.background = C.background;
+    let bw = 1920, bh = 972;
+    if (C.fit === "contain" || C.fit === "fill") {
+      // extend the design to the screen's shape: taller screens add space above/below the middle, wider ones at the sides
+      bw = Math.max(1920, Math.round(972 * W / H));
+      bh = Math.max(972, Math.round(1920 * H / W));
+    }
+    board.style.width = bw + "px"; board.style.height = bh + "px";
+    board.style.setProperty("--ox", (bw - 1920) / 2 + "px");
+    board.style.setProperty("--oy", (bh - 972) / 2 + "px");
     let sx = W / bw, sy = H / bh, x = 0, y = 0;
-    if (C.fit === "contain") { sx = sy = Math.min(sx, sy); x = (W - bw * sx) / 2; y = (H - bh * sy) / 2; }
+    if (C.fit === "contain" || C.fit === "fill") { sx = sy = Math.min(sx, sy); x = (W - bw * sx) / 2; y = (H - bh * sy) / 2; }
     else if (C.fit === "cover") { sx = sy = Math.max(sx, sy); x = (W - bw * sx) / 2; y = (H - bh * sy) / 2; }
     board.style.transform = `translate(${x}px, ${y}px) scale(${sx}, ${sy})`;
+    if (bw !== boardW || bh !== boardH) { boardW = bw; boardH = bh; drawDots(); if (lastShown !== null) { lastShown = null; render(true); } }
   }
-  addEventListener("resize", scale); scale();
 
   /* ---------- static chrome ---------- */
   $("province").textContent = C.province;
@@ -197,18 +208,18 @@
   ).join("");
 
   /* ---------- halftone dot background ---------- */
-  (function dots() {
-    const svg = $("dots"); svg.setAttribute("viewBox", "0 0 1920 972");
+  function drawDots() {
+    const svg = $("dots"); svg.setAttribute("viewBox", `0 0 ${boardW} ${boardH}`);
     let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     let out = "";
-    for (let y = 20; y < 972; y += 46) for (let x = 20; x < 1920; x += 46) {
+    for (let y = 20; y < boardH; y += 46) for (let x = 20; x < boardW; x += 46) {
       if (rnd() < 0.35) continue;
       const ox = x + (y / 46 % 2) * 23 + (rnd() - .5) * 10, oy = y + (rnd() - .5) * 10;
       const r = 3 + rnd() * 9;
       out += `<circle cx="${ox.toFixed(1)}" cy="${oy.toFixed(1)}" r="${r.toFixed(1)}" fill="#e3e5e8"/>`;
     }
     svg.innerHTML = out;
-  })();
+  }
 
   /* ---------- CSV ---------- */
   function parseCSV(text) {
@@ -283,6 +294,7 @@
 
   /* ---------- photos: cut away empty transparent margins so every guest fills the photo area ---------- */
   const trimCache = new Map();
+  const HALF_BODY = C.halfBody || 1.15;   // max height ÷ width of a guest photo (lower = crop higher)
   function trimmedPhoto(url) {
     if (trimCache.has(url)) return trimCache.get(url);
     const p = new Promise(resolve => {
@@ -299,10 +311,14 @@
           for (let y = 0; y < sh; y++) for (let xx = 0; xx < sw; xx++) {
             if (d[(y * sw + xx) * 4 + 3] > 24) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (y < y0) y0 = y; if (y > y1) y1 = y; }
           }
-          if (x1 < 0 || (x0 === 0 && y0 === 0 && x1 === sw - 1 && y1 === sh - 1)) return resolve(url);
+          if (x1 < 0) { x0 = 0; y0 = 0; x1 = sw - 1; y1 = sh - 1; }
           const pad = 1 / k;
           const cx = Math.max(0, Math.floor(x0 / k - pad)), cy = Math.max(0, Math.floor(y0 / k - pad));
-          const cw = Math.min(W, Math.ceil((x1 + 1) / k + pad)) - cx, ch = Math.min(H, Math.ceil((y1 + 1) / k + pad)) - cy;
+          const cw = Math.min(W, Math.ceil((x1 + 1) / k + pad)) - cx;
+          let ch = Math.min(H, Math.ceil((y1 + 1) / k + pad)) - cy;
+          // half body: cut the bottom off photos that go below the waist (taller than HALF_BODY × width)
+          ch = Math.min(ch, Math.round(cw * HALF_BODY));
+          if (cx === 0 && cy === 0 && cw === W && ch === H) return resolve(url);
           const out = document.createElement("canvas"); out.width = cw; out.height = ch;
           out.getContext("2d").drawImage(im, cx, cy, cw, ch, 0, 0, cw, ch);
           resolve(out.toDataURL("image/png"));
@@ -433,6 +449,7 @@
   }
   setInterval(pollRemote, 600); pollRemote();
 
+  addEventListener("resize", scale); scale(); drawDots();
   document.fonts.ready.then(() => { loadCSV(); if (showMain) render(); });
   setInterval(loadCSV, Math.max(2, C.csvRefreshSeconds) * 1000);
 })();
