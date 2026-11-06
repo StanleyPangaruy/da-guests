@@ -219,6 +219,10 @@ function editorHTML(g) {
       <label>Position<input name="position" value="${esc(g.position)}"></label>
       <label class="wide">Name<input name="name" value="${esc(g.name)}"></label>
       <label class="wide">Photo<select name="photo">${opts.join("")}</select></label>
+      <label class="wide">Photo size<select name="photo_fit">
+        <option value="">Normal (fit the photo area)</option>
+        <option value="height"${/^(height|fill|wide|big)$/i.test(g.photo_fit || "") ? " selected" : ""}>Full height (wide photo goes under the text)</option>
+      </select></label>
     </div>
     <div class="actions">
       <button type="submit" class="primary">Save</button>

@@ -70,6 +70,10 @@
   }
   /* fill the photo box: small images are scaled up, wide ones fit by width; always sits on the footer */
   .photo-wrap img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; display: block; }
+  /* photo_fit = height (per guest): always use the full height; a wide photo spills right, under the text */
+  .photo-wrap.fill-h { justify-content: flex-start; }
+  .photo-wrap.fill-h img { width: auto; max-width: none; margin: 0 auto; }   /* auto margins: centred if narrow, left-aligned (spills right) if wider */
+  .guest { z-index: 3; }
 
   /* Guest block */
   .guest {
@@ -358,6 +362,7 @@
     $("venue").textContent = g.venue || "";
     $("address").textContent = g.address || "";
     const img = $("photo");
+    img.parentElement.classList.toggle("fill-h", /^(height|fill|wide|big)$/i.test(g.photo_fit || ""));
     if (photoSrc) { img.src = photoSrc; img.style.display = ""; }
     else { img.removeAttribute("src"); img.style.display = "none"; }
 
