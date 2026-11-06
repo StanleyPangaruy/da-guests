@@ -29,6 +29,8 @@
   }
 
   #dots { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* photo background (config.backdrop); slightly enlarged to hide its rough outer edges */
+  #backdrop { position: absolute; inset: 0; background: center / cover no-repeat; transform: scale(1.06); }
 
   /* Header */
   .province {
@@ -86,7 +88,7 @@
   .address { color: var(--ink); font-weight: 700; font-size: 24px; line-height: 1.2; white-space: nowrap; }
 
   /* Main background: no guest; title, district and event details centred */
-  #board.main .event-title { left: var(--ox); }
+  #board.main .event-title { left: var(--ox); font-size: 112px; letter-spacing: -2px; top: calc(190px + var(--oy)); }
   #board.main .band-district, #board.main .district { height: 165px; }
   #board.main .district { left: calc(40px + var(--ox)); right: calc(40px + var(--ox)); }
   #board.main .photo-wrap, #board.main .name:empty, #board.main .position:empty { display: none; }
@@ -124,6 +126,7 @@
 <body>
 <div id="stage">
   <div id="board">
+    <div id="backdrop" aria-hidden="true"></div>
     <svg id="dots" aria-hidden="true"></svg>
 
     <div class="province" id="province"></div>
@@ -209,6 +212,7 @@
 
   /* ---------- halftone dot background ---------- */
   function drawDots() {
+    if (C.backdrop) { $("dots").innerHTML = ""; return; }   // a photo background replaces the dots
     const svg = $("dots"); svg.setAttribute("viewBox", `0 0 ${boardW} ${boardH}`);
     let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     let out = "";
@@ -449,6 +453,7 @@
   }
   setInterval(pollRemote, 600); pollRemote();
 
+  if (C.backdrop) $("backdrop").style.backgroundImage = `url("${C.backdrop}")`;
   addEventListener("resize", scale); scale(); drawDots();
   document.fonts.ready.then(() => { loadCSV(); if (showMain) render(); });
   setInterval(loadCSV, Math.max(2, C.csvRefreshSeconds) * 1000);

@@ -9,6 +9,7 @@ window.BOARD_CONFIG = {
 
   sealLeft:  "logo/quezon.webp",           // hi-res seals with transparent background
   sealRight: "logo/lopez.png",
+  backdrop: "background/backdrop.jpg",   // background photo behind everything ("" = dotted background)
 
   footer: [
     { img: "assets/icon-web.png",      text: "livelopez.gov.ph" },
